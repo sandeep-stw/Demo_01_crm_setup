@@ -16,9 +16,11 @@ install_dotnet_sdk() {
   export PATH="${DOTNET_ROOT}:${DOTNET_ROOT}/tools:${PATH}"
 }
 
-if ! command -v dotnet >/dev/null 2>&1; then
+if [ ! -x "${DOTNET_ROOT}/dotnet" ]; then
   install_dotnet_sdk
 fi
+
+export PATH="${DOTNET_ROOT}:${DOTNET_ROOT}/tools:${PATH}"
 
 if ! command -v pac >/dev/null 2>&1; then
   dotnet tool install --global Microsoft.PowerApps.CLI.Tool --version 1.38.3
