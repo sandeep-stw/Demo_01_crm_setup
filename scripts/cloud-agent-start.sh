@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-export PATH="${HOME}/.dotnet/tools:${PATH}"
+export DOTNET_ROOT="${DOTNET_ROOT:-$HOME/.dotnet}"
+export PATH="${DOTNET_ROOT}:${DOTNET_ROOT}/tools:${PATH}"
 
 if ! command -v pac >/dev/null 2>&1; then
   echo "Power Platform CLI (pac) is not installed." >&2
