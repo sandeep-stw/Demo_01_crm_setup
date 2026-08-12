@@ -1,32 +1,42 @@
 # Demo CRM Setup
 
-A minimal customer relationship management (CRM) demo built with Next.js, Prisma, and SQLite. It is designed to validate Cloud Agent development environments end to end.
+Cloud Agent development environment for **Microsoft Dynamics 365 CRM** and the **Power Platform**.
 
 ## Stack
 
-- **Next.js 15** (App Router, TypeScript)
-- **Prisma** with SQLite
-- **Tailwind CSS**
+- **.NET SDK 8** for plugin and integration development
+- **Power Platform CLI (`pac`)** for Dataverse, solutions, and deployments
+- **Node.js 22** for Power Apps component framework (PCF) development
 
-## Development
+## Local setup
 
 ```bash
-npm ci
-npx prisma db push
-npm run dev
+./scripts/cloud-agent-install.sh
+./scripts/cloud-agent-start.sh
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to use the CRM UI.
+## Authentication
 
-## Scripts
+The start script authenticates with a service principal when these environment secrets are configured:
 
-| Command | Description |
+| Secret | Description |
 | --- | --- |
-| `npm run dev` | Start the development server on port 3000 |
-| `npm run build` | Production build |
-| `npm run lint` | Run ESLint |
-| `npm run db:push` | Apply Prisma schema to the local SQLite database |
+| `AZURE_TENANT_ID` | Microsoft Entra tenant ID |
+| `AZURE_CLIENT_ID` | App registration (service principal) client ID |
+| `AZURE_CLIENT_SECRET` | App registration client secret |
+| `DATAVERSE_ENVIRONMENT_URL` | Dataverse environment URL, e.g. `https://orgname.crm.dynamics.com` |
+
+The app registration must be added as an application user in your Dataverse environment with appropriate security roles.
+
+## Common commands
+
+```bash
+pac auth who
+pac env list
+pac env who
+pac solution list
+```
 
 ## Cloud Agent
 
-Environment configuration lives in `.cursor/environment.json`. The install script prepares dependencies and the database; the dev server runs as a named terminal process.
+Environment configuration lives in `.cursor/environment.json`. The custom Dockerfile provides .NET and Node; the install script adds the Power Platform CLI; the start script connects to your Dynamics 365 environment when secrets are available.
