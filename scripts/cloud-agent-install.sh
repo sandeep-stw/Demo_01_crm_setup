@@ -29,5 +29,14 @@ fi
 export PATH="${DOTNET_ROOT}/tools:${PATH}"
 
 pac help >/dev/null
+
+profile_line='export DOTNET_ROOT="${DOTNET_ROOT:-$HOME/.dotnet}"; export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH"'
+for profile_file in "${HOME}/.profile" "${HOME}/.bashrc"; do
+  if [ -f "${profile_file}" ] && grep -qF 'DOTNET_ROOT' "${profile_file}"; then
+    continue
+  fi
+  printf '%s\n' "${profile_line}" >> "${profile_file}"
+done
+
 node --version
 dotnet --version
