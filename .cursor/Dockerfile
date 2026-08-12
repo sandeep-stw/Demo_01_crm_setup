@@ -16,4 +16,5 @@ USER ubuntu
 WORKDIR /home/ubuntu
 
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
-ENV PATH="/home/ubuntu/.dotnet/tools:${PATH}"
+ENV DOTNET_ROOT="/home/ubuntu/.dotnet"
+ENV PATH="/home/ubuntu/.dotnet:/home/ubuntu/.dotnet/tools:${PATH}"
