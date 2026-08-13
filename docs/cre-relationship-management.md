@@ -170,6 +170,25 @@ Configuration: `config/cre-email-lead-flow.json` (mailbox address, subject filte
 
 If `sandeep@stw-services.com` is a user mailbox (not shared), set `"type": "user"` under `mailbox` in `config/cre-email-lead-flow.json` and redeploy.
 
+### Register everything in the solution
+
+After metadata, app, and flow deploy, run:
+
+```bash
+python3 ./scripts/register-cre-solution-components.py
+```
+
+This idempotently adds to **CreRelationshipManagement**:
+
+- Global option sets, entity extensions, custom entities, and saved views
+- Model-driven app, sitemap, and CRE forms
+- Cloud flow **CRE - Email New Lead to CRM**
+- Connection references for Outlook and Dataverse
+
+`./scripts/deploy-cre-solution.sh` runs this step automatically at the end.
+
+**Note:** Forms and views on custom entities (`cre_property`, `cre_propertysuite`) may be nested under the entity in the solution explorer rather than listed as separate top-level components. Contact/account forms, the app, sitemap, and flow appear as distinct solution objects.
+
 ### Post-deployment
 
 1. Add fields to Contact, Account, and Property forms
