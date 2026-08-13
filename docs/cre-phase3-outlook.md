@@ -1,8 +1,8 @@
 # Phase 3 — Outlook-First Workflow
 
-Brokers complete everyday CRM tasks from Outlook using **Dynamics 365 App for Outlook**, email tracking, and supporting Power Automate flows.
+**Status: Complete** (GitHub issue [#4](https://github.com/sandeep-stw/Demo_01_crm_setup/issues/4))
 
-GitHub issue: [#4 — Phase 3 — Outlook-First Workflow](https://github.com/sandeep-stw/Demo_01_crm_setup/issues/4)
+Brokers complete everyday CRM tasks from Outlook using **Dynamics 365 App for Outlook**, email tracking, and supporting Power Automate flows.
 
 ## What is automated in this repo
 
