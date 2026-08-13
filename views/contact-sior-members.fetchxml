@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+  <entity name="contact">
+    <attribute name="fullname" />
+    <attribute name="emailaddress1" />
+    <attribute name="cre_professionaldesignations" />
+    <attribute name="cre_marketsserved" />
+    <attribute name="cre_relationshipclassifications" />
+    <order attribute="fullname" descending="false" />
+    <filter type="and">
+      <condition attribute="statecode" operator="eq" value="0" />
+      <condition attribute="cre_professionaldesignations" operator="contain-values">
+        <value>851250000</value>
+      </condition>
+    </filter>
+  </entity>
+</fetch>

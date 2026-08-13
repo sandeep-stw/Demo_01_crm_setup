@@ -1,0 +1,322 @@
+{
+  "solution": {
+    "name": "CreRelationshipManagement",
+    "publisher": "STW_CRE",
+    "prefix": "cre",
+    "version": "1.0.0.0"
+  },
+  "globalOptionSets": {
+    "cre_relationshipclassification": {
+      "displayName": "Relationship Classification",
+      "options": [
+        "Broker",
+        "Landlord",
+        "Tenant",
+        "Investor",
+        "Developer",
+        "Property Manager",
+        "Asset Manager",
+        "Lender",
+        "Attorney",
+        "Architect",
+        "Engineer",
+        "Vendor",
+        "Consultant",
+        "Municipality",
+        "Economic Development",
+        "Franchisee",
+        "Franchise Development",
+        "Owner/User",
+        "General Contractor",
+        "Government Agency"
+      ]
+    },
+    "cre_professionaldesignation": {
+      "displayName": "Professional Designation",
+      "options": [
+        "SIOR",
+        "CCIM",
+        "ICSC",
+        "CRE",
+        "CPM",
+        "RPA",
+        "LEED",
+        "NAIOP",
+        "ULI",
+        "BOMA",
+        "MBA",
+        "ALC"
+      ]
+    },
+    "cre_accountclassification": {
+      "displayName": "Account Classification",
+      "options": [
+        "Tenant",
+        "Landlord",
+        "Developer",
+        "REIT",
+        "Investment Group",
+        "Family Office",
+        "Franchise",
+        "Brokerage",
+        "Municipality",
+        "Property Owner",
+        "Vendor",
+        "Lender",
+        "Contractor"
+      ]
+    },
+    "cre_relationshiptier": {
+      "displayName": "Relationship Tier",
+      "options": ["A", "B", "C", "D"]
+    },
+    "cre_preferredcommunication": {
+      "displayName": "Preferred Communication Method",
+      "options": ["Email", "Phone", "Text", "LinkedIn", "In Person"]
+    },
+    "cre_renewaltimeline": {
+      "displayName": "Renewal Timeline",
+      "options": ["0-3 months", "3-6 months", "6-12 months", "12+ months", "Unknown"]
+    },
+    "cre_propertytype": {
+      "displayName": "Property Type",
+      "options": [
+        "Office",
+        "Industrial",
+        "Retail",
+        "Multifamily",
+        "Mixed Use",
+        "Land",
+        "Hospitality",
+        "Medical",
+        "Flex",
+        "Other"
+      ]
+    },
+    "cre_propertystatus": {
+      "displayName": "Property Status",
+      "options": ["Active", "Under Contract", "Sold", "Off Market", "Prospect"]
+    },
+    "cre_leasingstatus": {
+      "displayName": "Leasing Status",
+      "options": ["Available", "Partially Leased", "Fully Leased", "Off Market"]
+    }
+  },
+  "contactExtensions": {
+    "entity": "contact",
+    "fields": [
+      {
+        "schemaName": "cre_relationshipclassifications",
+        "displayName": "Relationship Classifications",
+        "type": "MultiSelectPicklist",
+        "optionSet": "cre_relationshipclassification",
+        "searchable": true
+      },
+      {
+        "schemaName": "cre_professionaldesignations",
+        "displayName": "Professional Designations",
+        "type": "MultiSelectPicklist",
+        "optionSet": "cre_professionaldesignation",
+        "searchable": true
+      },
+      { "schemaName": "cre_businessline", "displayName": "Business Line", "type": "String", "maxLength": 200 },
+      {
+        "schemaName": "cre_assignedbrokerid",
+        "displayName": "Assigned Broker",
+        "type": "Lookup",
+        "targets": ["systemuser"]
+      },
+      { "schemaName": "cre_marketsserved", "displayName": "Markets Served", "type": "Memo" },
+      { "schemaName": "cre_geographiccoverage", "displayName": "Geographic Coverage", "type": "Memo" },
+      { "schemaName": "cre_targetmarkets", "displayName": "Target Markets", "type": "Memo" },
+      { "schemaName": "cre_propertypreferences", "displayName": "Property Preferences", "type": "Memo" },
+      { "schemaName": "cre_minsf", "displayName": "Min SF", "type": "Integer", "min": 0 },
+      { "schemaName": "cre_maxsf", "displayName": "Max SF", "type": "Integer", "min": 0 },
+      { "schemaName": "cre_leaseexpirationdate", "displayName": "Lease Expiration Date", "type": "DateTime", "format": "DateOnly" },
+      {
+        "schemaName": "cre_renewaltimeline",
+        "displayName": "Renewal Timeline",
+        "type": "Picklist",
+        "optionSet": "cre_renewaltimeline"
+      },
+      { "schemaName": "cre_referralsource", "displayName": "Referral Source", "type": "String", "maxLength": 200 },
+      {
+        "schemaName": "cre_relationshiptier",
+        "displayName": "Relationship Tier",
+        "type": "Picklist",
+        "optionSet": "cre_relationshiptier"
+      },
+      {
+        "schemaName": "cre_lastmeaningfulcontact",
+        "displayName": "Last Meaningful Contact",
+        "type": "DateTime",
+        "format": "DateOnly"
+      },
+      {
+        "schemaName": "cre_preferredcommunicationmethod",
+        "displayName": "Preferred Communication Method",
+        "type": "Picklist",
+        "optionSet": "cre_preferredcommunication"
+      },
+      { "schemaName": "cre_sociallinkedin", "displayName": "LinkedIn URL", "type": "Url" },
+      { "schemaName": "cre_socialtwitter", "displayName": "Twitter/X URL", "type": "Url" },
+      { "schemaName": "cre_tags", "displayName": "Tags", "type": "Memo", "searchable": true }
+    ]
+  },
+  "accountExtensions": {
+    "entity": "account",
+    "fields": [
+      {
+        "schemaName": "cre_accountclassifications",
+        "displayName": "Account Classifications",
+        "type": "MultiSelectPicklist",
+        "optionSet": "cre_accountclassification",
+        "searchable": true
+      },
+      { "schemaName": "cre_portfoliosf", "displayName": "Portfolio SF", "type": "Integer", "min": 0 },
+      { "schemaName": "cre_markets", "displayName": "Markets", "type": "Memo" },
+      { "schemaName": "cre_industries", "displayName": "Industries", "type": "Memo" },
+      { "schemaName": "cre_naicscode", "displayName": "NAICS Code", "type": "String", "maxLength": 20 },
+      { "schemaName": "cre_multipleofficelocations", "displayName": "Multiple Office Locations", "type": "Boolean" }
+    ]
+  },
+  "entities": {
+    "cre_property": {
+      "displayName": "Property",
+      "pluralName": "Properties",
+      "description": "Commercial real estate property record",
+      "fields": [
+        { "schemaName": "cre_name", "displayName": "Property Name", "type": "String", "maxLength": 200, "required": true },
+        { "schemaName": "cre_addressline1", "displayName": "Address Line 1", "type": "String", "maxLength": 250 },
+        { "schemaName": "cre_addressline2", "displayName": "Address Line 2", "type": "String", "maxLength": 250 },
+        { "schemaName": "cre_city", "displayName": "City", "type": "String", "maxLength": 100 },
+        { "schemaName": "cre_state", "displayName": "State/Province", "type": "String", "maxLength": 50 },
+        { "schemaName": "cre_postalcode", "displayName": "Postal Code", "type": "String", "maxLength": 20 },
+        { "schemaName": "cre_county", "displayName": "County", "type": "String", "maxLength": 100 },
+        { "schemaName": "cre_market", "displayName": "Market", "type": "String", "maxLength": 100, "searchable": true },
+        { "schemaName": "cre_submarket", "displayName": "Submarket", "type": "String", "maxLength": 100, "searchable": true },
+        {
+          "schemaName": "cre_propertytype",
+          "displayName": "Property Type",
+          "type": "Picklist",
+          "optionSet": "cre_propertytype"
+        },
+        { "schemaName": "cre_ownershipnotes", "displayName": "Ownership Notes", "type": "Memo" },
+        {
+          "schemaName": "cre_assignedbrokerid",
+          "displayName": "Assigned Broker",
+          "type": "Lookup",
+          "targets": ["systemuser"]
+        },
+        {
+          "schemaName": "cre_propertystatus",
+          "displayName": "Status",
+          "type": "Picklist",
+          "optionSet": "cre_propertystatus"
+        },
+        { "schemaName": "cre_buildingsf", "displayName": "Building SF", "type": "Integer", "min": 0 },
+        { "schemaName": "cre_landareaacres", "displayName": "Land Area (Acres)", "type": "Decimal", "precision": 2 },
+        { "schemaName": "cre_occupancypct", "displayName": "Occupancy %", "type": "Decimal", "precision": 2 },
+        { "schemaName": "cre_parkingratio", "displayName": "Parking Ratio", "type": "String", "maxLength": 50 },
+        { "schemaName": "cre_constructionyear", "displayName": "Construction Year", "type": "Integer" },
+        { "schemaName": "cre_zoning", "displayName": "Zoning", "type": "String", "maxLength": 100 },
+        { "schemaName": "cre_availablesuites", "displayName": "Available Suites", "type": "Memo" },
+        { "schemaName": "cre_leaserate", "displayName": "Lease Rate", "type": "Money" },
+        { "schemaName": "cre_operatingexpenses", "displayName": "Operating Expenses", "type": "Money" },
+        { "schemaName": "cre_tenantimprovements", "displayName": "Tenant Improvements", "type": "Memo" },
+        {
+          "schemaName": "cre_leasingstatus",
+          "displayName": "Leasing Status",
+          "type": "Picklist",
+          "optionSet": "cre_leasingstatus"
+        },
+        {
+          "schemaName": "cre_primaryownerid",
+          "displayName": "Primary Owner",
+          "type": "Lookup",
+          "targets": ["account"]
+        },
+        {
+          "schemaName": "cre_propertymanagerid",
+          "displayName": "Property Manager",
+          "type": "Lookup",
+          "targets": ["account"]
+        },
+        {
+          "schemaName": "cre_assetmanagerid",
+          "displayName": "Asset Manager",
+          "type": "Lookup",
+          "targets": ["account"]
+        }
+      ]
+    },
+    "cre_propertysuite": {
+      "displayName": "Property Suite",
+      "pluralName": "Property Suites",
+      "description": "Suite-level leasing and tenant roster for multi-tenant properties",
+      "fields": [
+        { "schemaName": "cre_name", "displayName": "Suite Name", "type": "String", "maxLength": 200, "required": true },
+        {
+          "schemaName": "cre_propertyid",
+          "displayName": "Property",
+          "type": "Lookup",
+          "targets": ["cre_property"],
+          "required": true
+        },
+        { "schemaName": "cre_suitenumber", "displayName": "Suite Number", "type": "String", "maxLength": 50 },
+        { "schemaName": "cre_floor", "displayName": "Floor", "type": "String", "maxLength": 20 },
+        { "schemaName": "cre_suitearea", "displayName": "Suite Area (SF)", "type": "Integer", "min": 0 },
+        {
+          "schemaName": "cre_tenantcontactid",
+          "displayName": "Tenant Contact",
+          "type": "Lookup",
+          "targets": ["contact"]
+        },
+        {
+          "schemaName": "cre_tenantaccountid",
+          "displayName": "Tenant Account",
+          "type": "Lookup",
+          "targets": ["account"]
+        },
+        { "schemaName": "cre_leasestartdate", "displayName": "Lease Start Date", "type": "DateTime", "format": "DateOnly" },
+        { "schemaName": "cre_leaseexpirationdate", "displayName": "Lease Expiration Date", "type": "DateTime", "format": "DateOnly" },
+        { "schemaName": "cre_renewaloptions", "displayName": "Renewal Options", "type": "Memo" },
+        { "schemaName": "cre_isvacant", "displayName": "Vacant", "type": "Boolean" }
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "schemaName": "cre_account_property_primaryowner",
+      "displayName": "Account Properties (Owner)",
+      "type": "OneToMany",
+      "referencingEntity": "cre_property",
+      "referencingAttribute": "cre_primaryownerid",
+      "referencedEntity": "account"
+    },
+    {
+      "schemaName": "cre_property_propertysuite",
+      "displayName": "Property Suites",
+      "type": "OneToMany",
+      "referencingEntity": "cre_propertysuite",
+      "referencingAttribute": "cre_propertyid",
+      "referencedEntity": "cre_property"
+    },
+    {
+      "schemaName": "cre_contact_property_tenant",
+      "displayName": "Contact Properties (Tenant)",
+      "type": "ManyToMany",
+      "entity1": "contact",
+      "entity2": "cre_property",
+      "intersectEntity": "cre_contact_property"
+    },
+    {
+      "schemaName": "cre_account_property_portfolio",
+      "displayName": "Account Property Portfolio",
+      "type": "ManyToMany",
+      "entity1": "account",
+      "entity2": "cre_property",
+      "intersectEntity": "cre_account_property"
+    }
+  ]
+}

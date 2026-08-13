@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+  <entity name="contact">
+    <attribute name="fullname" />
+    <attribute name="emailaddress1" />
+    <attribute name="cre_leaseexpirationdate" />
+    <attribute name="cre_renewaltimeline" />
+    <attribute name="cre_assignedbrokerid" />
+    <order attribute="cre_leaseexpirationdate" descending="false" />
+    <filter type="and">
+      <condition attribute="statecode" operator="eq" value="0" />
+      <condition attribute="cre_leaseexpirationdate" operator="next-x-months" value="6" />
+    </filter>
+  </entity>
+</fetch>

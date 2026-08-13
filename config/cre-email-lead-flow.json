@@ -1,0 +1,30 @@
+{
+  "flow": {
+    "name": "CRE - Email New Lead to CRM",
+    "description": "Creates a Dataverse lead when an email with 'new lead' in the subject arrives at sandeep@stw-services.com",
+    "uniqueId": "cre-email-new-lead-to-crm"
+  },
+  "mailbox": {
+    "address": "sandeep@stw-services.com",
+    "folderPath": "Inbox",
+    "type": "shared"
+  },
+  "trigger": {
+    "subjectFilter": "new lead"
+  },
+  "connectionReferences": {
+    "outlook": {
+      "logicalName": "cre_sharedoffice365",
+      "displayName": "CRE Office 365 Outlook",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+    },
+    "dataverse": {
+      "logicalName": "cre_sharedcommondataserviceforapps",
+      "displayName": "CRE Microsoft Dataverse",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+    }
+  },
+  "lead": {
+    "leadSourceCode": 1
+  }
+}

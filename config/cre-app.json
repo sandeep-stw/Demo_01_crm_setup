@@ -1,0 +1,25 @@
+{
+  "app": {
+    "name": "CRE Relationship Hub",
+    "uniqueName": "CreRelationshipHub",
+    "description": "Commercial real estate relationship management for brokers",
+    "iconWebResourceId": "953b9fac-1e5e-e611-80d6-00155ded156f"
+  },
+  "forms": {
+    "cre_property": {
+      "name": "CRE Property",
+      "updateInformationForm": false
+    },
+    "cre_propertysuite": {
+      "name": "CRE Property Suite",
+      "updateInformationForm": false
+    },
+    "contact": {
+      "name": "CRE Contact"
+    },
+    "account": {
+      "name": "CRE Account"
+    }
+  },
+  "securityRoles": ["System Administrator", "System Customizer"]
+}

@@ -22,7 +22,9 @@ if [ -n "${AZURE_CLIENT_ID:-}" ] && [ -n "${AZURE_CLIENT_SECRET:-}" ] && [ -n "$
   fi
 
   if ! pac auth list 2>/dev/null | grep -q "cloud-agent"; then
-    pac auth create "${auth_args[@]}"
+    timeout 120 pac auth create "${auth_args[@]}" || {
+      echo "pac auth create timed out or failed; deploy scripts use direct Web API auth." >&2
+    }
   else
     pac auth select --name "cloud-agent"
   fi

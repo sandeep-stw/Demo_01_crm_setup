@@ -1,0 +1,52 @@
+{
+  "views": [
+    {
+      "name": "CRE - Tenant Requirements by SF",
+      "entity": "contact",
+      "fetchXmlFile": "contact-tenant-requirements-by-sf.fetchxml",
+      "description": "Active contacts with min/max SF for tenant requirement matching"
+    },
+    {
+      "name": "CRE - Lease Expirations (6 Months)",
+      "entity": "contact",
+      "fetchXmlFile": "contact-lease-expirations-6mo.fetchxml",
+      "description": "Contacts with lease expirations in the next 6 months"
+    },
+    {
+      "name": "CRE - Lease Expirations (12 Months)",
+      "entity": "contact",
+      "fetchXmlFile": "contact-lease-expirations-12mo.fetchxml",
+      "description": "Contacts with lease expirations in the next 12 months"
+    },
+    {
+      "name": "CRE - Lease Expirations (18 Months)",
+      "entity": "contact",
+      "fetchXmlFile": "contact-lease-expirations-18mo.fetchxml",
+      "description": "Contacts with lease expirations in the next 18 months"
+    },
+    {
+      "name": "CRE - Stale Contacts (Tier A/B, 60+ Days)",
+      "entity": "contact",
+      "fetchXmlFile": "contact-stale-tier-ab.fetchxml",
+      "description": "Tier A or B contacts with no meaningful contact in 60+ days"
+    },
+    {
+      "name": "CRE - Available Listings",
+      "entity": "cre_property",
+      "fetchXmlFile": "property-available-listings.fetchxml",
+      "description": "Available properties filterable by market, submarket, and SF"
+    },
+    {
+      "name": "CRE - Landlord Portfolio by Owner",
+      "entity": "cre_property",
+      "fetchXmlFile": "property-landlord-portfolio.fetchxml",
+      "description": "Properties grouped by primary owner account"
+    },
+    {
+      "name": "CRE - SIOR Members",
+      "entity": "contact",
+      "fetchXmlFile": "contact-sior-members.fetchxml",
+      "description": "Contacts with SIOR professional designation"
+    }
+  ]
+}

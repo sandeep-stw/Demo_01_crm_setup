@@ -1,42 +1,39 @@
 # Demo CRM Setup
 
-Cloud Agent development environment for **Microsoft Dynamics 365 CRM** and the **Power Platform**.
+Cloud Agent development environment and **Commercial Real Estate (CRE) relationship management** solution for Microsoft Dynamics 365 / Dataverse.
 
 ## Stack
 
-- **.NET SDK 8** for plugin and integration development
-- **Power Platform CLI (`pac`)** for Dataverse, solutions, and deployments
-- **Node.js 22** for Power Apps component framework (PCF) development
+- **.NET 9 SDK** and **Power Platform CLI (`pac`)**
+- **Dataverse Web API** deployment scripts
+- **Solution project**: `solutions/CreRelationshipManagement`
 
-## Local setup
+## CRE data model
+
+See [docs/cre-relationship-management.md](docs/cre-relationship-management.md) for the full specification:
+
+- **Contact** — multi-select relationship classifications, professional designations, CRE custom fields
+- **Account** — CRE classifications, portfolio and industry fields
+- **Property** (`cre_property`) — property, building, leasing, and ownership data
+- **Property Suite** (`cre_propertysuite`) — multi-tenant suite roster
+- **Saved views** — tenant requirements, lease expirations, stale contacts, listings, portfolios, SIOR members
+- **Model-driven app** — CRE Relationship Hub with forms and navigation
+- **Cloud flow** — email with "new lead" in subject → new Lead record
+
+### Deploy to Dataverse
+
+```bash
+./scripts/deploy-cre-solution.sh
+```
+
+Requires environment secrets: `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, `DATAVERSE_ENVIRONMENT_URL`.
+
+## Cloud Agent environment
 
 ```bash
 ./scripts/cloud-agent-install.sh
 ./scripts/cloud-agent-start.sh
 ```
 
-## Authentication
+Configuration: `.cursor/environment.json`
 
-The start script authenticates with a service principal when these environment secrets are configured:
-
-| Secret | Description |
-| --- | --- |
-| `AZURE_TENANT_ID` | Microsoft Entra tenant ID |
-| `AZURE_CLIENT_ID` | App registration (service principal) client ID |
-| `AZURE_CLIENT_SECRET` | App registration client secret |
-| `DATAVERSE_ENVIRONMENT_URL` | Dataverse environment URL, e.g. `https://orgname.crm.dynamics.com` |
-
-The app registration must be added as an application user in your Dataverse environment with appropriate security roles.
-
-## Common commands
-
-```bash
-pac auth who
-pac env list
-pac env who
-pac solution list
-```
-
-## Cloud Agent
-
-Environment configuration lives in `.cursor/environment.json`. The custom Dockerfile provides .NET and Node; the install script adds the Power Platform CLI; the start script connects to your Dynamics 365 environment when secrets are available.
