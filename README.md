@@ -17,6 +17,8 @@ See [docs/cre-relationship-management.md](docs/cre-relationship-management.md) f
 - **Property** (`cre_property`) — property, building, leasing, and ownership data
 - **Property Suite** (`cre_propertysuite`) — multi-tenant suite roster
 - **Saved views** — tenant requirements, lease expirations, stale contacts, listings, portfolios, SIOR members
+- **Model-driven app** — CRE Relationship Hub with forms and navigation
+- **Cloud flow** — email with "new lead" in subject → new Lead record
 
 ### Deploy to Dataverse
 

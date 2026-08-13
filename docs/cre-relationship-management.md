@@ -150,6 +150,26 @@ pac auth create --environment "$DATAVERSE_ENVIRONMENT_URL" \
 pac solution sync
 ```
 
+### Email-to-lead cloud flow
+
+When an email arrives at **sandeep@stw-services.com** with **new lead** in the subject, the flow **CRE - Email New Lead to CRM** creates a row in the standard **Lead** table.
+
+Deploy:
+
+```bash
+python3 ./scripts/deploy-cre-lead-flow.py
+```
+
+Configuration: `config/cre-email-lead-flow.json` (mailbox address, subject filter, connection references).
+
+**One-time activation in Power Automate:**
+
+1. Open **Solutions** → **CRE Relationship Management** → **CRE - Email New Lead to CRM**
+2. Edit the flow and sign in to **Office 365 Outlook** and **Microsoft Dataverse** connections
+3. Save and turn the flow **On**
+
+If `sandeep@stw-services.com` is a user mailbox (not shared), set `"type": "user"` under `mailbox` in `config/cre-email-lead-flow.json` and redeploy.
+
 ### Post-deployment
 
 1. Add fields to Contact, Account, and Property forms
