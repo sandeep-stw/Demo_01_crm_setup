@@ -39,7 +39,7 @@ def build_clientdata(config: dict[str, Any]) -> dict[str, Any]:
                 "parameters": {
                     "subscriptionRequest/message": 4,
                     "subscriptionRequest/entityname": "opportunity",
-                    "subscriptionRequest/scope": "Organization",
+                    "subscriptionRequest/scope": 4,
                     "subscriptionRequest/filteringattributes": "cre_pipelinestage",
                 },
                 "authentication": "@parameters('$authentication')",
@@ -77,7 +77,6 @@ def build_clientdata(config: dict[str, Any]) -> dict[str, Any]:
                             "item/description": "@concat('Pipeline stage changed for opportunity. Review next actions for this deal.', decodeUriComponent('%0A%0A'), 'Stage value: ', string(triggerOutputs()?['body/cre_pipelinestage']))",
                             "item/scheduledend": f"@addDays(utcNow(), {due_days})",
                             "item/prioritycode": priority,
-                            "item/regardingobjectid@odata.bind": "@concat('/opportunities(', triggerOutputs()?['body/opportunityid'], ')')",
                         },
                         "authentication": "@parameters('$authentication')",
                     },
