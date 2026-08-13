@@ -18,6 +18,7 @@ python3 ./scripts/deploy-cre-model.py
 python3 ./scripts/add-cre-to-solution.py
 python3 ./scripts/deploy-cre-app.py
 python3 ./scripts/deploy-cre-lead-flow.py
+python3 ./scripts/register-cre-solution-components.py
 
 if command -v pac >/dev/null 2>&1 && pac auth list 2>/dev/null | grep -q cloud-agent; then
   echo "Syncing solution project from environment..."
