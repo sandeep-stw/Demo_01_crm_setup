@@ -7,7 +7,7 @@ export DOTNET_ROOT="${DOTNET_ROOT:-$HOME/.dotnet}"
 export PATH="${DOTNET_ROOT}:${DOTNET_ROOT}/tools:${PATH}"
 
 if [ -f ./scripts/cloud-agent-start.sh ]; then
-  ./scripts/cloud-agent-start.sh
+  timeout 120 ./scripts/cloud-agent-start.sh || echo "Warning: start script timed out or failed; continuing with deploy."
 fi
 
 python3 ./scripts/deploy-cre-model.py

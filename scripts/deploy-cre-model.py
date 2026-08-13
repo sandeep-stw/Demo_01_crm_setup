@@ -395,8 +395,21 @@ def get_access_token() -> tuple[str, str]:
         headers={"Content-Type": "application/x-www-form-urlencoded"},
         method="POST",
     )
-    with urllib.request.urlopen(request, timeout=60) as response:
-        token_payload = json.loads(response.read().decode("utf-8"))
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            token_payload = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as error:
+        detail = error.read().decode("utf-8", errors="replace")
+        try:
+            parsed = json.loads(detail)
+            description = parsed.get("error_description", detail)
+        except json.JSONDecodeError:
+            description = detail
+        raise RuntimeError(
+            "Failed to acquire Azure AD access token. "
+            f"Verify AZURE_TENANT_ID, AZURE_CLIENT_ID, and AZURE_CLIENT_SECRET. "
+            f"Use the client secret Value (not the Secret ID). Details: {description}"
+        ) from error
     return environment_url, token_payload["access_token"]
 
 
