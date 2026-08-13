@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+  <entity name="contact">
+    <attribute name="fullname" />
+    <attribute name="emailaddress1" />
+    <attribute name="cre_lastmeaningfulcontact" />
+    <attribute name="cre_relationshiptier" />
+    <attribute name="cre_assignedbrokerid" />
+    <order attribute="cre_lastmeaningfulcontact" descending="true" />
+    <filter type="and">
+      <condition attribute="statecode" operator="eq" value="0" />
+      <filter type="or">
+        <condition attribute="cre_relationshiptier" operator="eq" value="851250000" />
+        <condition attribute="cre_relationshiptier" operator="eq" value="851250001" />
+      </filter>
+      <filter type="or">
+        <condition attribute="cre_lastmeaningfulcontact" operator="olderthan-x-days" value="60" />
+        <condition attribute="cre_lastmeaningfulcontact" operator="null" />
+      </filter>
+    </filter>
+  </entity>
+</fetch>

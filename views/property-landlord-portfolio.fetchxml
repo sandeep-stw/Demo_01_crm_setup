@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+  <entity name="cre_property">
+    <attribute name="cre_name" />
+    <attribute name="cre_market" />
+    <attribute name="cre_buildingsf" />
+    <attribute name="cre_occupancypct" />
+    <attribute name="cre_primaryownerid" />
+    <order attribute="cre_buildingsf" descending="true" />
+    <filter type="and">
+      <condition attribute="statecode" operator="eq" value="0" />
+      <condition attribute="cre_primaryownerid" operator="not-null" />
+    </filter>
+  </entity>
+</fetch>
