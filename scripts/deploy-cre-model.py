@@ -164,7 +164,22 @@ def build_url_attribute(schema_name: str, display_name: str) -> dict[str, Any]:
     }
 
 
-def build_picklist_attribute(schema_name: str, display_name: str, option_set_name: str) -> dict[str, Any]:
+def build_local_options(options: list[str]) -> list[dict[str, Any]]:
+    return [
+        {
+            "Value": 851250000 + index,
+            "@odata.type": "Microsoft.Dynamics.CRM.OptionMetadata",
+            "Label": localized(option),
+        }
+        for index, option in enumerate(options)
+    ]
+
+
+def build_picklist_attribute(
+    schema_name: str,
+    display_name: str,
+    options: list[str],
+) -> dict[str, Any]:
     return {
         "@odata.type": "Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
         "SchemaName": schema_name,
@@ -172,13 +187,18 @@ def build_picklist_attribute(schema_name: str, display_name: str, option_set_nam
         "RequiredLevel": {"Value": "None"},
         "OptionSet": {
             "@odata.type": "Microsoft.Dynamics.CRM.OptionSetMetadata",
-            "IsGlobal": True,
-            "Name": option_set_name,
+            "IsGlobal": False,
+            "OptionSetType": "Picklist",
+            "Options": build_local_options(options),
         },
     }
 
 
-def build_multiselect_attribute(schema_name: str, display_name: str, option_set_name: str) -> dict[str, Any]:
+def build_multiselect_attribute(
+    schema_name: str,
+    display_name: str,
+    options: list[str],
+) -> dict[str, Any]:
     return {
         "@odata.type": "Microsoft.Dynamics.CRM.MultiSelectPicklistAttributeMetadata",
         "SchemaName": schema_name,
@@ -186,8 +206,9 @@ def build_multiselect_attribute(schema_name: str, display_name: str, option_set_
         "RequiredLevel": {"Value": "None"},
         "OptionSet": {
             "@odata.type": "Microsoft.Dynamics.CRM.OptionSetMetadata",
-            "IsGlobal": True,
-            "Name": option_set_name,
+            "IsGlobal": False,
+            "OptionSetType": "Picklist",
+            "Options": build_local_options(options),
         },
     }
 
@@ -202,10 +223,11 @@ def build_lookup_attribute(schema_name: str, display_name: str, targets: list[st
     }
 
 
-def field_to_attribute(field: dict[str, Any]) -> dict[str, Any]:
+def field_to_attribute(field: dict[str, Any], metadata: dict[str, Any]) -> dict[str, Any]:
     field_type = field["type"]
     schema_name = field["schemaName"]
     display_name = field["displayName"]
+    option_sets = metadata.get("globalOptionSets", {})
 
     if field_type == "String":
         return build_string_attribute(schema_name, display_name, field.get("maxLength", 100))
@@ -224,11 +246,13 @@ def field_to_attribute(field: dict[str, Any]) -> dict[str, Any]:
     if field_type == "DateTime":
         return build_datetime_attribute(schema_name, display_name, field.get("format") == "DateOnly")
     if field_type == "Picklist":
-        return build_picklist_attribute(schema_name, display_name, field["optionSet"])
+        options = option_sets[field["optionSet"]]["options"]
+        return build_picklist_attribute(schema_name, display_name, options)
     if field_type == "MultiSelectPicklist":
-        return build_multiselect_attribute(schema_name, display_name, field["optionSet"])
+        options = option_sets[field["optionSet"]]["options"]
+        return build_multiselect_attribute(schema_name, display_name, options)
     if field_type == "Lookup":
-        return build_lookup_attribute(schema_name, display_name, field["targets"])
+        raise ValueError("Lookup fields must be deployed via relationships")
     raise ValueError(f"Unsupported field type: {field_type}")
 
 
@@ -269,8 +293,84 @@ def deploy_option_sets(client: DataverseClient, metadata: dict[str, Any]) -> Non
         time.sleep(0.5)
 
 
-def create_custom_entity(client: DataverseClient, entity_key: str, definition: dict[str, Any]) -> None:
+def deploy_entity_fields(
+    client: DataverseClient,
+    entity_name: str,
+    fields: list[dict[str, Any]],
+    metadata: dict[str, Any],
+) -> None:
+    for field in fields:
+        schema_name = field["schemaName"]
+        field_type = field["type"]
+
+        if field_type == "Lookup":
+            referenced_entity = field["targets"][0]
+            relationship_name = field.get(
+                "relationshipSchemaName",
+                f"cre_{referenced_entity}_{entity_name}_{schema_name.replace('id', '')}",
+            )
+            if attribute_exists(client, entity_name, schema_name):
+                print(f"  Lookup exists: {entity_name}.{schema_name}")
+                continue
+            if relationship_exists(client, relationship_name):
+                print(f"  Relationship exists: {relationship_name}")
+                continue
+            payload = {
+                "@odata.type": "Microsoft.Dynamics.CRM.OneToManyRelationshipMetadata",
+                "SchemaName": relationship_name,
+                "ReferencedEntity": referenced_entity,
+                "ReferencingEntity": entity_name,
+                "Lookup": {
+                    "@odata.type": "Microsoft.Dynamics.CRM.LookupAttributeMetadata",
+                    "SchemaName": schema_name,
+                    "DisplayName": localized(field["displayName"]),
+                    "RequiredLevel": {"Value": "ApplicationRequired" if field.get("required") else "None"},
+                },
+                "CascadeConfiguration": {
+                    "@odata.type": "Microsoft.Dynamics.CRM.CascadeConfiguration",
+                    "Assign": "NoCascade",
+                    "Delete": "RemoveLink",
+                    "Merge": "NoCascade",
+                    "Reparent": "NoCascade",
+                    "Share": "NoCascade",
+                    "Unshare": "NoCascade",
+                    "RollupView": "NoCascade",
+                },
+            }
+            client.post("RelationshipDefinitions", payload)
+            print(f"  Created lookup: {entity_name}.{schema_name} -> {referenced_entity}")
+            time.sleep(1)
+            continue
+
+        if attribute_exists(client, entity_name, schema_name):
+            print(f"  Attribute exists: {entity_name}.{schema_name}")
+            continue
+        attribute = field_to_attribute(field, metadata)
+        client.post(f"EntityDefinitions(LogicalName='{entity_name}')/Attributes", attribute)
+        print(f"  Created attribute: {entity_name}.{schema_name}")
+        time.sleep(0.5)
+
+
+def relationship_exists(client: DataverseClient, schema_name: str) -> bool:
+    try:
+        client.get(f"RelationshipDefinitions(SchemaName='{schema_name}')")
+        return True
+    except RuntimeError:
+        return False
+def create_custom_entity(
+    client: DataverseClient,
+    entity_key: str,
+    definition: dict[str, Any],
+    metadata: dict[str, Any],
+) -> None:
     logical_name = entity_key
+    primary_field = next(
+        (field for field in definition["fields"] if field["schemaName"] == "cre_name"),
+        None,
+    )
+    if primary_field is None:
+        raise ValueError(f"Entity {logical_name} requires a cre_name primary field")
+
     if entity_exists(client, logical_name):
         print(f"Entity exists: {logical_name}")
     else:
@@ -284,38 +384,49 @@ def create_custom_entity(client: DataverseClient, entity_key: str, definition: d
             "IsActivity": False,
             "HasActivities": False,
             "HasNotes": True,
+            "Attributes": [
+                {
+                    "@odata.type": "Microsoft.Dynamics.CRM.StringAttributeMetadata",
+                    "AttributeType": "String",
+                    "AttributeTypeName": {"Value": "StringType"},
+                    "SchemaName": "cre_name",
+                    "DisplayName": localized(primary_field["displayName"]),
+                    "MaxLength": primary_field.get("maxLength", 200),
+                    "FormatName": {"Value": "Text"},
+                    "IsPrimaryName": True,
+                    "RequiredLevel": {"Value": "ApplicationRequired"},
+                }
+            ],
         }
         client.post("EntityDefinitions", payload)
         print(f"Created entity: {logical_name}")
-        time.sleep(2)
+        time.sleep(3)
 
-    for field in definition["fields"]:
-        schema_name = field["schemaName"]
-        if attribute_exists(client, logical_name, schema_name):
-            print(f"  Attribute exists: {logical_name}.{schema_name}")
-            continue
-        attribute = field_to_attribute(field)
-        client.post(f"EntityDefinitions(LogicalName='{logical_name}')/Attributes", attribute)
-        print(f"  Created attribute: {logical_name}.{schema_name}")
-        time.sleep(0.5)
+    remaining_fields = [field for field in definition["fields"] if field["schemaName"] != "cre_name"]
+    deploy_entity_fields(client, logical_name, remaining_fields, metadata)
 
 
-def extend_entity(client: DataverseClient, entity_name: str, fields: list[dict[str, Any]]) -> None:
+def extend_entity(
+    client: DataverseClient,
+    entity_name: str,
+    fields: list[dict[str, Any]],
+    metadata: dict[str, Any],
+) -> None:
     print(f"Extending entity: {entity_name}")
-    for field in fields:
-        schema_name = field["schemaName"]
-        if attribute_exists(client, entity_name, schema_name):
-            print(f"  Attribute exists: {entity_name}.{schema_name}")
-            continue
-        attribute = field_to_attribute(field)
-        client.post(f"EntityDefinitions(LogicalName='{entity_name}')/Attributes", attribute)
-        print(f"  Created attribute: {entity_name}.{schema_name}")
-        time.sleep(0.5)
+    deploy_entity_fields(client, entity_name, fields, metadata)
 
 
 def publish_customizations(client: DataverseClient) -> None:
     client.post("PublishAllXml", {})
     print("Published all customizations")
+
+
+def normalize_fetchxml(content: str) -> str:
+    """Strip XML declaration; Dataverse savedqueries require root <fetch> element."""
+    text = content.strip()
+    if text.startswith("<?xml"):
+        text = text.split("?>", 1)[-1].strip()
+    return text
 
 
 def deploy_views(client: DataverseClient) -> None:
@@ -328,7 +439,7 @@ def deploy_views(client: DataverseClient) -> None:
         if not fetch_path.exists():
             print(f"Skipping missing view file: {fetch_path.name}")
             continue
-        fetch_xml = fetch_path.read_text(encoding="utf-8").strip()
+        fetch_xml = normalize_fetchxml(fetch_path.read_text(encoding="utf-8"))
         name = view["name"]
         existing = client.get(
             "savedqueries?"
@@ -422,11 +533,11 @@ def main() -> int:
     print(f"Connected to organization: {who.get('OrganizationId')}")
 
     deploy_option_sets(client, metadata)
-    extend_entity(client, metadata["contactExtensions"]["entity"], metadata["contactExtensions"]["fields"])
-    extend_entity(client, metadata["accountExtensions"]["entity"], metadata["accountExtensions"]["fields"])
+    extend_entity(client, metadata["contactExtensions"]["entity"], metadata["contactExtensions"]["fields"], metadata)
+    extend_entity(client, metadata["accountExtensions"]["entity"], metadata["accountExtensions"]["fields"], metadata)
 
     for entity_key, entity_definition in metadata["entities"].items():
-        create_custom_entity(client, entity_key, entity_definition)
+        create_custom_entity(client, entity_key, entity_definition, metadata)
 
     publish_customizations(client)
     deploy_views(client)
