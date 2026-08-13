@@ -391,6 +391,7 @@ def build_sitemap_xml() -> str:
       <SubArea Id="cre_accounts" Entity="account" IntroducedVersion="9.0.0.0" />
       <SubArea Id="cre_properties" Entity="cre_property" IntroducedVersion="9.0.0.0" />
       <SubArea Id="cre_suites" Entity="cre_propertysuite" IntroducedVersion="9.0.0.0" />
+      <SubArea Id="cre_opportunities" Entity="opportunity" IntroducedVersion="9.0.0.0" />
     </Group>
   </Area>
 </SiteMap>"""

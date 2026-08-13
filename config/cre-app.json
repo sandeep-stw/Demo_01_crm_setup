@@ -19,6 +19,9 @@
     },
     "account": {
       "name": "CRE Account"
+    },
+    "opportunity": {
+      "name": "CRE Opportunity"
     }
   },
   "securityRoles": ["System Administrator", "System Customizer"]

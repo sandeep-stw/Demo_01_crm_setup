@@ -1,0 +1,17 @@
+<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+  <entity name="opportunity">
+    <attribute name="name" />
+    <attribute name="customerid" />
+    <attribute name="cre_businessline" />
+    <attribute name="cre_pipelinestage" />
+    <attribute name="cre_targetclosedate" />
+    <attribute name="cre_expectedcommission" />
+    <attribute name="estimatedvalue" />
+    <attribute name="closeprobability" />
+    <order attribute="cre_targetclosedate" descending="false" />
+    <filter type="and">
+      <condition attribute="statecode" operator="eq" value="0" />
+      <condition attribute="cre_targetclosedate" operator="next-x-months" value="3" />
+    </filter>
+  </entity>
+</fetch>

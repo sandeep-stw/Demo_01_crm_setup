@@ -15,6 +15,8 @@ METADATA_PATH = ROOT / "config" / "cre-metadata.json"
 VIEWS_PATH = ROOT / "config" / "cre-views.json"
 APP_CONFIG_PATH = ROOT / "config" / "cre-app.json"
 FLOW_CONFIG_PATH = ROOT / "config" / "cre-email-lead-flow.json"
+PIPELINE_PATH = ROOT / "config" / "cre-deal-pipeline.json"
+PIPELINE_FLOW_PATH = ROOT / "config" / "cre-pipeline-stage-flow.json"
 OUTLOOK_WORKFLOWS_PATH = ROOT / "config" / "cre-outlook-workflows.json"
 
 COMPONENT_FORM = 60
@@ -326,6 +328,9 @@ def register_all_components(client: Any, metadata: dict[str, Any]) -> None:
     register_app(client, solution_name, app_config)
     register_flow(client, solution_name, flow_config)
     register_outlook_flows(client, solution_name)
+    if PIPELINE_FLOW_PATH.exists():
+        pipeline_flow = json.loads(PIPELINE_FLOW_PATH.read_text(encoding="utf-8"))
+        register_flow_by_name(client, solution_name, pipeline_flow["flow"]["name"])
     register_connection_references(client, solution_name, flow_config)
 
     client.post("PublishAllXml", {})
@@ -333,9 +338,19 @@ def register_all_components(client: Any, metadata: dict[str, Any]) -> None:
     print(f"\nAll CRE components registered in solution '{solution_name}'.")
 
 
+def load_metadata() -> dict[str, Any]:
+    metadata = json.loads(METADATA_PATH.read_text(encoding="utf-8"))
+    if PIPELINE_PATH.exists():
+        pipeline = json.loads(PIPELINE_PATH.read_text(encoding="utf-8"))
+        metadata.setdefault("globalOptionSets", {}).update(pipeline.get("globalOptionSets", {}))
+        if "opportunityExtensions" in pipeline:
+            metadata["opportunityExtensions"] = pipeline["opportunityExtensions"]
+    return metadata
+
+
 def main() -> int:
     deploy = load_module("deploy_cre_model", ROOT / "scripts" / "deploy-cre-model.py")
-    metadata = json.loads(METADATA_PATH.read_text(encoding="utf-8"))
+    metadata = load_metadata()
     environment_url, token = deploy.get_access_token()
     client = deploy.DataverseClient(environment_url, token)
     who = client.get("WhoAmI")
