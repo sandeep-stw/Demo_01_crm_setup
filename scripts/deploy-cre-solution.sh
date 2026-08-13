@@ -10,10 +10,14 @@ if [ -f ./scripts/cloud-agent-start.sh ]; then
   timeout 120 ./scripts/cloud-agent-start.sh || echo "Warning: start script timed out or failed; continuing with deploy."
 fi
 
-python3 ./scripts/deploy-cre-model.py
-
-if command -v pac >/dev/null 2>&1; then
-  echo "Packing solution project..."
+if command -v dotnet >/dev/null 2>&1; then
   dotnet build ./solutions/CreRelationshipManagement/CreRelationshipManagement.cdsproj
-  pac solution import --path ./solutions/CreRelationshipManagement/bin/Debug
+fi
+
+python3 ./scripts/deploy-cre-model.py
+python3 ./scripts/add-cre-to-solution.py
+
+if command -v pac >/dev/null 2>&1 && pac auth list 2>/dev/null | grep -q cloud-agent; then
+  echo "Syncing solution project from environment..."
+  pac solution sync --solution-folder ./solutions/CreRelationshipManagement/src
 fi
