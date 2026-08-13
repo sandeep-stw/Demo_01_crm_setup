@@ -15,6 +15,7 @@ METADATA_PATH = ROOT / "config" / "cre-metadata.json"
 VIEWS_PATH = ROOT / "config" / "cre-views.json"
 APP_CONFIG_PATH = ROOT / "config" / "cre-app.json"
 FLOW_CONFIG_PATH = ROOT / "config" / "cre-email-lead-flow.json"
+OUTLOOK_WORKFLOWS_PATH = ROOT / "config" / "cre-outlook-workflows.json"
 
 COMPONENT_FORM = 60
 COMPONENT_SITEMAP = 62
@@ -186,14 +187,26 @@ def register_app(client: Any, solution_name: str, app_config: dict[str, Any]) ->
     add_component(client, solution_name, app_id, COMPONENT_APP, f"App {app['name']}")
 
 
-def register_flow(client: Any, solution_name: str, flow_config: dict[str, Any]) -> None:
-    print("Registering cloud flow...")
-    flow_name = flow_config["flow"]["name"]
+def register_flow_by_name(client: Any, solution_name: str, flow_name: str) -> None:
     workflow_id = find_workflow(client, flow_name)
     if not workflow_id:
         print(f"  Skipped flow (not found): {flow_name}")
         return
     add_component(client, solution_name, workflow_id, COMPONENT_WORKFLOW, f"Flow {flow_name}")
+
+
+def register_flow(client: Any, solution_name: str, flow_config: dict[str, Any]) -> None:
+    print("Registering cloud flow...")
+    register_flow_by_name(client, solution_name, flow_config["flow"]["name"])
+
+
+def register_outlook_flows(client: Any, solution_name: str) -> None:
+    if not OUTLOOK_WORKFLOWS_PATH.exists():
+        return
+    outlook_config = json.loads(OUTLOOK_WORKFLOWS_PATH.read_text(encoding="utf-8"))
+    print("Registering Outlook workflows...")
+    for flow_def in outlook_config.get("flows", {}).values():
+        register_flow_by_name(client, solution_name, flow_def["name"])
 
 
 def register_connection_references(client: Any, solution_name: str, flow_config: dict[str, Any]) -> None:
@@ -263,6 +276,15 @@ def verify_solution_membership(client: Any, solution_name: str, metadata: dict[s
     if workflow_id:
         print(f"  Flow {flow_config['flow']['name']}: {'yes' if in_solution(COMPONENT_WORKFLOW, workflow_id) else 'no'}")
 
+    if OUTLOOK_WORKFLOWS_PATH.exists():
+        outlook_config = json.loads(OUTLOOK_WORKFLOWS_PATH.read_text(encoding="utf-8"))
+        for flow_def in outlook_config.get("flows", {}).values():
+            wid = find_workflow(client, flow_def["name"])
+            if wid:
+                print(
+                    f"  Flow {flow_def['name']}: {'yes' if in_solution(COMPONENT_WORKFLOW, wid) else 'no'}"
+                )
+
     views_config = json.loads(VIEWS_PATH.read_text(encoding="utf-8"))
     missing_views = []
     for view in views_config.get("views", []):
@@ -303,6 +325,7 @@ def register_all_components(client: Any, metadata: dict[str, Any]) -> None:
     register_sitemap(client, solution_name, metadata, app_config)
     register_app(client, solution_name, app_config)
     register_flow(client, solution_name, flow_config)
+    register_outlook_flows(client, solution_name)
     register_connection_references(client, solution_name, flow_config)
 
     client.post("PublishAllXml", {})

@@ -1,0 +1,28 @@
+{
+  "modelDrivenApp": {
+    "uniqueName": "CreRelationshipHub",
+    "displayName": "CRE Relationship Hub"
+  },
+  "outlookEntities": [
+    "contact",
+    "account",
+    "opportunity",
+    "cre_property",
+    "task",
+    "appointment",
+    "email"
+  ],
+  "emailTracking": {
+    "allowTrackingToken": true,
+    "allowCorrelation": true
+  },
+  "mailboxDefaults": {
+    "incomingEmailDeliveryMethod": 2,
+    "outgoingEmailDeliveryMethod": 2,
+    "emailRouterAccessApproval": 1
+  },
+  "rollout": {
+    "deploymentMethod": "centralized",
+    "notes": "Deploy Dynamics 365 App for Outlook via Microsoft 365 admin center or user self-install from AppSource after model-driven app is published."
+  }
+}
