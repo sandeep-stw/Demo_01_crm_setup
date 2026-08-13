@@ -318,6 +318,45 @@ def publish_customizations(client: DataverseClient) -> None:
     print("Published all customizations")
 
 
+def deploy_views(client: DataverseClient) -> None:
+    if not VIEWS_PATH.exists():
+        return
+    views_config = json.loads(VIEWS_PATH.read_text(encoding="utf-8"))
+    for view in views_config.get("views", []):
+        entity = view["entity"]
+        fetch_path = VIEWS_DIR / view["fetchXmlFile"]
+        if not fetch_path.exists():
+            print(f"Skipping missing view file: {fetch_path.name}")
+            continue
+        fetch_xml = fetch_path.read_text(encoding="utf-8").strip()
+        name = view["name"]
+        existing = client.get(
+            "savedqueries?"
+            + urllib.parse.urlencode(
+                {
+                    "$select": "savedqueryid,name",
+                    "$filter": f"name eq '{name.replace(chr(39), chr(39)+chr(39))}'",
+                    "$top": "1",
+                }
+            )
+        )
+        if existing.get("value"):
+            print(f"View exists: {name}")
+            continue
+        payload = {
+            "name": name,
+            "description": view.get("description", name),
+            "fetchxml": fetch_xml,
+            "querytype": 0,
+            "returnedtypecode": entity,
+            "isdefault": False,
+            "isquickfindquery": False,
+        }
+        client.post("savedqueries", payload)
+        print(f"Created view: {name}")
+        time.sleep(0.3)
+
+
 def get_access_token() -> tuple[str, str]:
     tenant_id = os.environ.get("AZURE_TENANT_ID")
     client_id = os.environ.get("AZURE_CLIENT_ID")
@@ -377,12 +416,13 @@ def main() -> int:
         create_custom_entity(client, entity_key, entity_definition)
 
     publish_customizations(client)
+    deploy_views(client)
 
     print("\nDeployment complete.")
     print("Next steps:")
-    print("  1. Import saved views from /views using pac solution sync or Power Apps maker portal")
-    print("  2. Configure advanced find columns and quick find on new fields")
-    print("  3. Add forms and business rules in the CreRelationshipManagement solution")
+    print("  1. Add new fields to Contact, Account, and Property forms in Power Apps")
+    print("  2. Configure quick find on designation and classification fields")
+    print("  3. Assign security roles for broker users")
     return 0
 
 

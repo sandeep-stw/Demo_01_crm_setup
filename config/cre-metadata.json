@@ -240,13 +240,13 @@
           "schemaName": "cre_propertymanagerid",
           "displayName": "Property Manager",
           "type": "Lookup",
-          "targets": ["contact", "account"]
+          "targets": ["account"]
         },
         {
           "schemaName": "cre_assetmanagerid",
           "displayName": "Asset Manager",
           "type": "Lookup",
-          "targets": ["contact", "account"]
+          "targets": ["account"]
         }
       ]
     },
