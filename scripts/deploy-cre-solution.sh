@@ -17,6 +17,8 @@ fi
 python3 ./scripts/deploy-cre-model.py
 python3 ./scripts/add-cre-to-solution.py
 python3 ./scripts/deploy-cre-app.py
+python3 ./scripts/deploy-cre-deal-pipeline.py
+python3 ./scripts/deploy-cre-pipeline-stage-flow.py
 python3 ./scripts/deploy-cre-lead-flow.py
 python3 ./scripts/deploy-cre-outlook-workflows.py
 python3 ./scripts/deploy-cre-outlook-app.py

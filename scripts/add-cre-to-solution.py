@@ -16,6 +16,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 METADATA_PATH = ROOT / "config" / "cre-metadata.json"
 VIEWS_PATH = ROOT / "config" / "cre-views.json"
+PIPELINE_PATH = ROOT / "config" / "cre-deal-pipeline.json"
 SOLUTION_ZIP = ROOT / "solutions" / "CreRelationshipManagement" / "bin" / "Debug" / "CreRelationshipManagement.zip"
 
 # https://learn.microsoft.com/en-us/power-apps/developer/data-platform/reference/component-types
@@ -162,7 +163,9 @@ def register_cre_solution(client: Any, metadata: dict[str, Any]) -> None:
         time.sleep(0.2)
 
     print("Adding Contact and Account field extensions...")
-    for section_key in ("contactExtensions", "accountExtensions"):
+    for section_key in ("contactExtensions", "accountExtensions", "opportunityExtensions"):
+        if section_key not in metadata:
+            continue
         section = metadata[section_key]
         entity = section["entity"]
         for field in section["fields"]:
@@ -210,13 +213,39 @@ def register_cre_solution(client: Any, metadata: dict[str, Any]) -> None:
                 print(f"  Skipped view {view['name']}: {error}")
             time.sleep(0.2)
 
+    if PIPELINE_PATH.exists():
+        pipeline = json.loads(PIPELINE_PATH.read_text(encoding="utf-8"))
+        for view in pipeline.get("views", []):
+            try:
+                query_id = saved_query_id(client, view["name"])
+                add_component(
+                    client,
+                    solution_name,
+                    query_id,
+                    COMPONENT_SAVED_QUERY,
+                    label=f"View {view['name']}",
+                )
+            except RuntimeError as error:
+                print(f"  Skipped view {view['name']}: {error}")
+            time.sleep(0.2)
+
     client.post("PublishAllXml", {})
     print(f"\nSolution '{solution_name}' is ready in Power Apps > Solutions.")
 
 
+def load_metadata() -> dict[str, Any]:
+    metadata = json.loads(METADATA_PATH.read_text(encoding="utf-8"))
+    if PIPELINE_PATH.exists():
+        pipeline = json.loads(PIPELINE_PATH.read_text(encoding="utf-8"))
+        metadata.setdefault("globalOptionSets", {}).update(pipeline.get("globalOptionSets", {}))
+        if "opportunityExtensions" in pipeline:
+            metadata["opportunityExtensions"] = pipeline["opportunityExtensions"]
+    return metadata
+
+
 def main() -> int:
     deploy = load_deploy_module()
-    metadata = json.loads(METADATA_PATH.read_text(encoding="utf-8"))
+    metadata = load_metadata()
     environment_url, token = deploy.get_access_token()
     client = deploy.DataverseClient(environment_url, token)
     who = client.get("WhoAmI")

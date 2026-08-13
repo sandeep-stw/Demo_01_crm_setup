@@ -1,0 +1,17 @@
+{
+  "flow": {
+    "name": "CRE - Deal Stage Change Task",
+    "description": "Creates a follow-up task when an opportunity pipeline stage changes"
+  },
+  "connectionReferences": {
+    "dataverse": {
+      "logicalName": "cre_sharedcommondataserviceforapps",
+      "displayName": "CRE Microsoft Dataverse",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+    }
+  },
+  "taskDefaults": {
+    "priorityCode": 2,
+    "dueInDays": 2
+  }
+}

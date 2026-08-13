@@ -1,5 +1,2 @@
-.next/
-node_modules/
-*.db
-.env
-__pycache__/
+# Local BPF export templates (large; generated during deploy experiments)
+templates/

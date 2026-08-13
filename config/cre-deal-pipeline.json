@@ -1,0 +1,265 @@
+{
+  "globalOptionSets": {
+    "cre_dealbusinessline": {
+      "displayName": "Deal Business Line",
+      "options": [
+        "Tenant Representation",
+        "Landlord Representation",
+        "Investment Sales",
+        "Property Management",
+        "Development",
+        "Capital Markets",
+        "Retail Site Selection & Consulting"
+      ]
+    },
+    "cre_commissionmethod": {
+      "displayName": "Commission Calculation Method",
+      "options": [
+        "Percent of Lease Value",
+        "Percent of Sale Price",
+        "Flat Fee",
+        "Custom Schedule"
+      ]
+    },
+    "cre_pipelinestage": {
+      "displayName": "Pipeline Stage",
+      "options": [
+        "Qualify",
+        "Develop",
+        "Propose",
+        "LOI / Offer",
+        "Negotiate",
+        "Close Won",
+        "Close Lost"
+      ]
+    }
+  },
+  "opportunityExtensions": {
+    "entity": "opportunity",
+    "fields": [
+      {
+        "schemaName": "cre_businessline",
+        "displayName": "Business Line",
+        "type": "Picklist",
+        "optionSet": "cre_dealbusinessline",
+        "required": true
+      },
+      {
+        "schemaName": "cre_propertyid",
+        "displayName": "Property",
+        "type": "Lookup",
+        "targets": ["cre_property"],
+        "relationshipSchemaName": "cre_cre_property_opportunity_cre_propertyid"
+      },
+      {
+        "schemaName": "cre_dealsizesf",
+        "displayName": "Deal Size (SF)",
+        "type": "Integer"
+      },
+      {
+        "schemaName": "cre_leasetermmonths",
+        "displayName": "Lease Term (Months)",
+        "type": "Integer"
+      },
+      {
+        "schemaName": "cre_saleprice",
+        "displayName": "Sale Price",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_caprate",
+        "displayName": "Cap Rate (%)",
+        "type": "Decimal"
+      },
+      {
+        "schemaName": "cre_loaninformation",
+        "displayName": "Loan Information",
+        "type": "Memo"
+      },
+      {
+        "schemaName": "cre_loiofferdate",
+        "displayName": "LOI / Offer Date",
+        "type": "DateTime",
+        "format": "DateOnly"
+      },
+      {
+        "schemaName": "cre_targetclosedate",
+        "displayName": "Target Close Date",
+        "type": "DateTime",
+        "format": "DateOnly"
+      },
+      {
+        "schemaName": "cre_pipelinestage",
+        "displayName": "Pipeline Stage",
+        "type": "Picklist",
+        "optionSet": "cre_pipelinestage"
+      },
+      {
+        "schemaName": "cre_grosscommission",
+        "displayName": "Gross Commission",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_netcommission",
+        "displayName": "Net Commission",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_expectedcommission",
+        "displayName": "Expected Commission",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_actualcommission",
+        "displayName": "Actual Commission",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_commissionmethod",
+        "displayName": "Commission Calculation Method",
+        "type": "Picklist",
+        "optionSet": "cre_commissionmethod"
+      },
+      {
+        "schemaName": "cre_referralfees",
+        "displayName": "Referral Fees",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_outsidebrokerfees",
+        "displayName": "Outside Broker Fees",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_cobrokerfees",
+        "displayName": "Co-Broker Fees",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_houseportion",
+        "displayName": "House Portion",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_brokerportion",
+        "displayName": "Broker Portion",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_commissionadjustments",
+        "displayName": "Commission Adjustments",
+        "type": "Money"
+      },
+      {
+        "schemaName": "cre_cobrokerid",
+        "displayName": "Co-Broker",
+        "type": "Lookup",
+        "targets": ["account"],
+        "relationshipSchemaName": "cre_account_opportunity_cre_cobrokerid"
+      },
+      {
+        "schemaName": "cre_dealreferralsource",
+        "displayName": "Referral Source",
+        "type": "String",
+        "maxLength": 200
+      },
+      {
+        "schemaName": "cre_dealnotes",
+        "displayName": "Deal Notes",
+        "type": "Memo"
+      }
+    ]
+  },
+  "businessProcessFlows": [
+    {
+      "name": "CRE - Tenant Representation Deal Process",
+      "uniqueName": "cre_tenantrepresentationdealprocess",
+      "businessLine": "Tenant Representation",
+      "stages": ["Qualify Requirement", "Site Tour", "LOI Negotiation", "Lease Execution", "Close"]
+    },
+    {
+      "name": "CRE - Landlord Representation Deal Process",
+      "uniqueName": "cre_landlordrepresentationdealprocess",
+      "businessLine": "Landlord Representation",
+      "stages": ["Listing Setup", "Marketing", "Tenant Prospects", "LOI", "Lease Signed", "Close"]
+    },
+    {
+      "name": "CRE - Investment Sales Deal Process",
+      "uniqueName": "cre_investmentsalesdealprocess",
+      "businessLine": "Investment Sales",
+      "stages": ["Qualify", "Underwriting", "Marketing", "LOI / Offer", "Due Diligence", "Close"]
+    },
+    {
+      "name": "CRE - Property Management Deal Process",
+      "uniqueName": "cre_propertymanagementdealprocess",
+      "businessLine": "Property Management",
+      "stages": ["Intake", "Proposal", "Negotiation", "Award", "Onboarding", "Close"]
+    },
+    {
+      "name": "CRE - Development Deal Process",
+      "uniqueName": "cre_developmentdealprocess",
+      "businessLine": "Development",
+      "stages": ["Site Selection", "Feasibility", "Entitlements", "Financing", "Construction", "Close"]
+    },
+    {
+      "name": "CRE - Capital Markets Deal Process",
+      "uniqueName": "cre_capitalmarketsdealprocess",
+      "businessLine": "Capital Markets",
+      "stages": ["Qualify", "Package Loan", "Lender Outreach", "Term Sheet", "Closing", "Funded"]
+    },
+    {
+      "name": "CRE - Retail Site Selection Deal Process",
+      "uniqueName": "cre_retailsiteselectiondealprocess",
+      "businessLine": "Retail Site Selection & Consulting",
+      "stages": ["Criteria", "Market Survey", "Site Tours", "LOI", "Lease", "Close"]
+    }
+  ],
+  "form": {
+    "name": "CRE Opportunity",
+    "tabs": {
+      "Deal": [
+        "cre_businessline",
+        "cre_propertyid",
+        "cre_dealsizesf",
+        "cre_leasetermmonths",
+        "cre_saleprice",
+        "cre_caprate",
+        "cre_loaninformation",
+        "cre_pipelinestage",
+        "cre_loiofferdate",
+        "cre_targetclosedate",
+        "cre_dealreferralsource",
+        "cre_dealnotes"
+      ],
+      "Commission": [
+        "cre_commissionmethod",
+        "cre_grosscommission",
+        "cre_netcommission",
+        "cre_expectedcommission",
+        "cre_actualcommission",
+        "cre_referralfees",
+        "cre_outsidebrokerfees",
+        "cre_cobrokerfees",
+        "cre_houseportion",
+        "cre_brokerportion",
+        "cre_commissionadjustments",
+        "cre_cobrokerid"
+      ]
+    },
+    "standardFields": {
+      "Deal": ["name", "customerid", "estimatedvalue", "closeprobability", "estimatedclosedate", "ownerid"]
+    }
+  },
+  "views": [
+    {
+      "name": "CRE - Open Deals by Business Line",
+      "description": "Active opportunities grouped by CRE business line",
+      "fetchXmlFile": "opportunity-open-by-business-line.fetchxml"
+    },
+    {
+      "name": "CRE - Deals Closing This Quarter",
+      "description": "Opportunities with target close date in the current quarter",
+      "fetchXmlFile": "opportunity-closing-this-quarter.fetchxml"
+    }
+  ]
+}
