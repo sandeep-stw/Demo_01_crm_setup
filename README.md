@@ -19,6 +19,9 @@ See [docs/cre-relationship-management.md](docs/cre-relationship-management.md) f
 - **Saved views** — tenant requirements, lease expirations, stale contacts, listings, portfolios, SIOR members
 - **Model-driven app** — CRE Relationship Hub with forms and navigation
 - **Cloud flow** — email with "new lead" in subject → new Lead record
+- **Phase 3 Outlook** — App for Outlook rollout, calendar logging flow, unknown-sender alert flow
+
+See [docs/cre-phase3-outlook.md](docs/cre-phase3-outlook.md) for Outlook-first workflow setup (issue [#4](https://github.com/sandeep-stw/Demo_01_crm_setup/issues/4)).
 
 ### Deploy to Dataverse
 

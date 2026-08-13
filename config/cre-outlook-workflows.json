@@ -1,0 +1,34 @@
+{
+  "connectionReferences": {
+    "outlook": {
+      "logicalName": "cre_sharedoffice365",
+      "displayName": "CRE Office 365 Outlook",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+    },
+    "dataverse": {
+      "logicalName": "cre_sharedcommondataserviceforapps",
+      "displayName": "CRE Microsoft Dataverse",
+      "connectorId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+    }
+  },
+  "mailbox": {
+    "address": "sandeep@stw-services.com",
+    "folderPath": "Inbox",
+    "type": "user",
+    "calendar": "Calendar"
+  },
+  "flows": {
+    "calendarLog": {
+      "name": "CRE - Log Accepted Meeting to CRM",
+      "description": "Creates CRM appointment activities when a broker accepts an Outlook calendar event with external attendees"
+    },
+    "unknownSender": {
+      "name": "CRE - Alert Unknown Email Sender",
+      "description": "Creates a broker task when an inbound email arrives from a sender not found in CRM contacts or leads"
+    }
+  },
+  "taskDefaults": {
+    "priorityCode": 2,
+    "dueInDays": 1
+  }
+}
