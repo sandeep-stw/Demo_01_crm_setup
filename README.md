@@ -37,6 +37,12 @@ pac env who
 pac solution list
 ```
 
+## Create a Power App with AI
+
+Step-by-step maker guide (sign in, pick environment, Copilot / Plans / vibe, connect Dataverse or SharePoint, publish):
+
+- [docs/power-apps-ai-guide.md](docs/power-apps-ai-guide.md)
+
 ## Cloud Agent
 
 Environment configuration lives in `.cursor/environment.json`. The custom Dockerfile provides .NET and Node; the install script adds the Power Platform CLI; the start script connects to your Dynamics 365 environment when secrets are available.
