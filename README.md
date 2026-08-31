@@ -41,7 +41,8 @@ pac solution list
 
 Step-by-step maker guide (sign in, pick environment, Copilot / Plans / vibe, connect Dataverse or SharePoint, publish):
 
-- [docs/power-apps-ai-guide.md](docs/power-apps-ai-guide.md)
+- Word document: [docs/Power-Apps-AI-Step-by-Step-Guide.docx](docs/Power-Apps-AI-Step-by-Step-Guide.docx)
+- Markdown source: [docs/power-apps-ai-guide.md](docs/power-apps-ai-guide.md)
 
 ## Cloud Agent
 
